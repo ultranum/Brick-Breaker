@@ -107,13 +107,15 @@ paddle.setPos(WIDTH/2,HEIGHT - 30)
 blockList = []
 blockList.append(blocks(0,0))
 blockList[0].setPos(0,0)
-for i in range(10):
+for i in range(20):
     x = blockList[i-1].x + blockList[i-1].width + 10
     y = 0
-    blockList.append(blocks(x, y))
-    blockList[i].setPos(x, y)
-    if (blockList[i].x + blockList[i].width) >= WIDTH:
+    if blockList[i].x >= WIDTH:
         y = blockList[i].height + blockList[i].y + 2
+    else:
+        blockList.append(blocks(x, y))
+        blockList[i].setPos(x, y)
+
 print(blockList)
 running = True
 while running:
