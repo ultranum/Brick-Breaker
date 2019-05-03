@@ -1,5 +1,5 @@
 '''
-title: PyGame Template
+title: Brick Breaker
 author: garrett
 date created: 2019-04-08
 '''
@@ -29,17 +29,17 @@ clock = pygame.time.Clock() # Starts a clock to measure time
 
 class blocks:
     def __init__(self, x=0, y=0, width=50, height=10):
+        self.height = height
+        self.width = width
         self.x = x
         self.y = y
-        self.pos = (self.x, self.y)
-        self.width = width
-        self.height = height
-        self.dim = (self.width, self.height)
-        self.xDir = 1
-        self.yDir = -1
         self.color = WHITE
-        self.surface = pygame.Surface((0, 0), pygame.SRCALPHA, 32)
+        self.dim = (self.width, self.height)
+        self.pos = (self.x, self.y)
+        self.surface = pygame.Surface(self.dim, pygame.SRCALPHA, 32)
         self.surface.fill(self.color)
+        self.xDir = 1
+        self.yDir = 1
 
     def getSurface(self):
         return self.surface
@@ -51,6 +51,13 @@ class blocks:
         self.x = x
         self.y = y
         self.pos = (self.x, self.y)
+        self.surface = pygame.Surface(self.dim, pygame.SRCALPHA, 32)
+        self.surface.fill(self.color)
+
+    def setDim(self, width, height):
+        self.height = height
+        self.width = width
+        self.dim = (self.width, self.height)
         self.surface = pygame.Surface(self.dim, pygame.SRCALPHA, 32)
         self.surface.fill(self.color)
 
@@ -101,20 +108,20 @@ def getSpriteCollision(sprite1, sprite2):
         return False
 # --- CODE STARTS HERE --- #
 paddle = paddle(90, 90, 100, 20)
-ball = ball(20, 20, 20, 20)
-ball.setPos(30,30)
-paddle.setPos(WIDTH/2,HEIGHT - 30)
+ball = ball(100,100, 20, 20)
 blockList = []
-blockList.append(blocks(0,0))
-blockList[0].setPos(0,0)
-for i in range(20):
-    x = blockList[i-1].x + blockList[i-1].width + 10
-    y = 0
-    if blockList[i].x >= WIDTH:
-        y = blockList[i].height + blockList[i].y + 2
-    else:
+y = 10
+for i in range(5):
+    x = 0
+    for j in range(10):
+        print(j)
+        print(x)
         blockList.append(blocks(x, y))
         blockList[i].setPos(x, y)
+        x += 33
+    y += 20
+
+
 
 print(blockList)
 running = True
