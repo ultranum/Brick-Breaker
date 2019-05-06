@@ -73,7 +73,7 @@ class blocks:
     def getHeight(self):
         return self.height
 
-    def __repr__(self):
+    def __repr__(self): # For debugging
         return ('x:%s y:%s'%(self.x, self.y))
 
 class paddle(blocks):
@@ -82,7 +82,6 @@ class paddle(blocks):
         blocks.__init__(self, x, y, width, height)
 
     def playerMove(self, pressedKey, spd=5):
-
         if pressedKey[pygame.K_a]:
             self.x -= spd
         if pressedKey[pygame.K_d]:
@@ -117,20 +116,16 @@ def getSpriteCollision(sprite1, sprite2):
     else:
         return False
 # --- CODE STARTS HERE --- #
-paddle = paddle(WIDTH/2, HEIGHT - 100, 150, 10)
-ball = ball(100,100, 20, 20)
+paddle = paddle(WIDTH/2 - 75, HEIGHT - 100, 1500, 10)
+ball = ball(WIDTH/2 - 75,HEIGHT - 200, 20, 20)
 blockList = []
 y = 5
 for i in range(5):
-    x = 0
+    x = 65
     for j in range(15):
-        blockList.append(blocks(x, y, 40, 10))
-        blockList[i].setPos(x, y)
+        blockList.append(blocks(x, y, 40, 15))
         x += blockList[i].width + 5
-    y += 20
-
-
-
+    y += blockList[i].height + 10
 print(blockList)
 running = True
 while running:
@@ -138,15 +133,18 @@ while running:
         if event.type == pygame.QUIT: # If the red X was clicked.
             running = False
         pressedKeys = pygame.key.get_pressed()
-    ball.autoMove()
-    paddle.playerMove(pressedKeys, 10)
-    if getSpriteCollision(paddle, ball) == True:
-        if ball.xDir == 1 or ball.xDir == -1 and ball.yDir == 1:
+    ball.autoMove(20)
+    paddle.playerMove(pressedKeys, 15)
+    if getSpriteCollision(paddle, ball) == True: # Checks if paddle and ball collided
+        if ball.xDir == 1 or ball.xDir == -1 and ball.yDir == 1: # Bounces ball back
             ball.yDir = -1
-    # for i in range(len(blockList)):
-    #     if getSpriteCollision(ball, blockList[i]):
-    #         blockList.pop(i)
-    #         ball.yDir = 1
+    for i in range(len(blockList)):
+        if getSpriteCollision(ball, blockList[i]):
+            blockList.pop(i)
+            if ball.yDir == -1:
+                ball.yDir = 1
+            elif ball.yDir == 1:
+                ball.yDir = -1
 
 
     screen.fill(GREY)
