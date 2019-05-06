@@ -61,17 +61,26 @@ class blocks:
         self.surface = pygame.Surface(self.dim, pygame.SRCALPHA, 32)
         self.surface.fill(self.color)
 
-    def collision(self):
-        pass
+    def getX(self):
+        return self.x
+
+    def getY(self):
+        return self.y
+
+    def getWidth(self):
+        return self.width
+
+    def getHeight(self):
+        return self.height
 
     def __repr__(self):
-        return ('%s, %s'%(self.x, self.y))
+        return ('x:%s y:%s'%(self.x, self.y))
+
 class paddle(blocks):
 
     def __init__(self, x, y, width, height):
         blocks.__init__(self, x, y, width, height)
-        self.surface = pygame.Surface(self.dim, pygame.SRCALPHA, 32)
-        self.surface.fill(self.color)
+
     def playerMove(self, pressedKey, spd=5):
 
         if pressedKey[pygame.K_a]:
@@ -101,24 +110,23 @@ class ball(blocks):
             self.yDir = 1
         self.pos = (self.x, self.y)
 
+
 def getSpriteCollision(sprite1, sprite2):
     if sprite2.getX() <= sprite1.getX() + sprite1.getWidth() <= sprite2.getX() + sprite2.getWidth() + sprite1.getWidth() and sprite2.getY() <= sprite1.getY() + sprite1.getHeight() <= sprite2.getY() + sprite2.getHeight() + sprite1.getHeight():
         return True
     else:
         return False
 # --- CODE STARTS HERE --- #
-paddle = paddle(90, 90, 100, 20)
+paddle = paddle(WIDTH/2, HEIGHT - 100, 150, 10)
 ball = ball(100,100, 20, 20)
 blockList = []
-y = 10
+y = 5
 for i in range(5):
     x = 0
-    for j in range(10):
-        print(j)
-        print(x)
-        blockList.append(blocks(x, y))
+    for j in range(15):
+        blockList.append(blocks(x, y, 40, 10))
         blockList[i].setPos(x, y)
-        x += 33
+        x += blockList[i].width + 5
     y += 20
 
 
@@ -132,6 +140,15 @@ while running:
         pressedKeys = pygame.key.get_pressed()
     ball.autoMove()
     paddle.playerMove(pressedKeys, 10)
+    if getSpriteCollision(paddle, ball) == True:
+        if ball.xDir == 1 or ball.xDir == -1 and ball.yDir == 1:
+            ball.yDir = -1
+    # for i in range(len(blockList)):
+    #     if getSpriteCollision(ball, blockList[i]):
+    #         blockList.pop(i)
+    #         ball.yDir = 1
+
+
     screen.fill(GREY)
     screen.blit(paddle.getSurface(), paddle.getPOS())
     screen.blit(ball.getSurface(), ball.getPOS())
