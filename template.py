@@ -9,7 +9,7 @@ pygame.init() # loads pygame module commands in the program
 
 # Display Variables
 TITLE = 'Hello World' # Appears in the window title
-FPS = 15 # fps
+FPS = 30 # fps
 WIDTH = 800
 HEIGHT = 600
 SCREENDIM = (WIDTH, HEIGHT)
@@ -130,26 +130,25 @@ def getSpriteCollisionYsides(sprite1, sprite2):
     else:
         return False
 
-def collisionmaybe(rect1, rect2):
-    topright1 = (rect1.getX() + rect1.getWidth(), rect1.getY())
-    botright1 = (rect1.getX() + rect1.getWidth(), rect1.getY() + rect1.getHeight())
-    topleft1 = (rect1.getX(), rect1.getY())
-    botleft1 = (rect1.getX(), rect1.getY() + rect1.getHeight())
-    topright2 = (rect2.getX() + rect2.getWidth(), rect2.getY())
-    botright2 = (rect2.getX() + rect2.getWidth(), rect2.getY() + rect2.getHeight())
-    topleft2 = (rect2.getX(), rect2.getY())
-    botleft2 = (rect2.getX(), rect2.getY() + rect2.getHeight())
-    # right1 = rect1.getX() + rect1.getWidth()
-    # bot1 = rect1.getX() + rect1.getWidth(), rect1.getY() + rect1.getHeight()
-    # left1 = rect1.getX(), rect1.getY()
-    # top1 = rect1.getX(), rect1.getY() + rect1.getHeight()
-    # right2 = rect2.getX() + rect2.getWidth(), rect2.getY()
-    # bot2 = rect2.getX() + rect2.getWidth(), rect2.getY() + rect2.getHeight()
-    # left2 = rect2.getX(), rect2.getY()
-    # top2 = rect2.getX(), rect2.getY() + rect2.getHeight()
-    if topright1 <= topleft2 <= topright2 <= topleft1:
-        print('TRUE')
-
+def collision(rect1, rect2):
+    # topright1 = (rect1.getX() + rect1.getWidth(), rect1.getY())
+    # botright1 = (rect1.getX() + rect1.getWidth(), rect1.getY() + rect1.getHeight())
+    # topleft1 = (rect1.getX(), rect1.getY())
+    # botleft1 = (rect1.getX(), rect1.getY() + rect1.getHeight())
+    # topright2 = (rect2.getX() + rect2.getWidth(), rect2.getY())
+    # botright2 = (rect2.getX() + rect2.getWidth(), rect2.getY() + rect2.getHeight())
+    # topleft2 = (rect2.getX(), rect2.getY())
+    # botleft2 = (rect2.getX(), rect2.getY() + rect2.getHeight())
+    right1 = rect1.getX() + rect1.getWidth()
+    bot1 = rect1.getY() + rect1.getHeight()
+    left1 = rect1.getX()
+    top1 = rect1.getY()
+    right2 = rect2.getX() + rect2.getWidth()
+    bot2 = rect2.getY() + rect2.getHeight()
+    left2 = rect2.getX()
+    top2 = rect2.getY()
+    if right1 > left2 and left1 < right2 and bot1 > top2 and top1 < bot2:
+        return True
 
 def setup():
 
@@ -159,10 +158,10 @@ def setup():
         ball.xDir = 1
         ball.yDir = 1
 
-        y = 5
+        y = 30
         for i in range(4):
             x = 35
-            for j in range(10):
+            for j in range(18):
                 blockList.append(blocks(x, y, 40, 20))
                 x += blockList[i].width + 5
             y += blockList[i].height + 40
@@ -204,61 +203,54 @@ while running:
     ball.autoMove(20)
     paddle.playerMove(pressedKeys, 15)
     for i in range(len(blockList)):
-        collisionmaybe(blockList[i],ball )
+        collision(blockList[i],ball )
 
-    if getSpriteCollision(paddle, ball): # Checks if paddle and ball collided
+    if collision(paddle, ball): # Checks if paddle and ball collided
         ball.yDir = -1
-    #
-    # if level == 1:
-    #     for i in range(len(blockList)):
-    #         if getSpriteCollision(ball, blockList[i]):
-    #             if getSpriteCollisionYsides(ball, blockList[i]):
-    #                 print('hit y')
-    #                 blockList.pop(i)
-    #                 ball.yDir = -ball.yDir
-    #                 break
-    #             if getSpriteCollisionXsides(ball, blockList[i]):
-    #                 print('hit x')
-    #                 blockList.pop(i)
-    #                 ball.xDir = -ball.xDir
-    #
-    #                 break
-    #             ball.xDir = -ball.xDir
-    #             ball.yDir = -ball.yDir
-    #             score += 10
-    #             print(score)
-    #             print(len(blockList))
-    #             break
-    #
-    # elif level == 2:
-    #     for i in range(len(blockList2)):
-    #         if getSpriteCollision(ball, blockList2[i]):
-    #             if getSpriteCollisionYsides(ball, blockList2[i]):
-    #                 blockList2.pop(i)
-    #                 if ball.yDir == -1:
-    #                     ball.yDir = 1
-    #
-    #                 elif ball.yDir == 1:
-    #                     ball.yDir = -1
-    #
-    #                 break
-    #             if getSpriteCollisionXsides(ball, blockList2[i]):
-    #                 blockList2.pop(i)
-    #                 if ball.xDir == -1:
-    #                     ball.xDir = 1
-    #
-    #                 elif ball.xDir == 1:
-    #                     ball.xDir = -1
-    #
-    #                 break
-    #
-    #
-    #             ball.xDir = -ball.xDir
-    #             ball.yDir = -ball.yDir
-    #             score += 10
-    #             print(score)
-    #             print(len(blockList2))
-    #             break
+
+    if level == 1:
+        for i in range(len(blockList)):
+            if collision(ball, blockList[i]):
+
+                blockList.pop(i)
+                ball.yDir = -ball.yDir
+                break
+
+
+                score += 10
+                print(score)
+                print(len(blockList))
+                break
+
+    elif level == 2:
+        for i in range(len(blockList2)):
+            if getSpriteCollision(ball, blockList2[i]):
+                if getSpriteCollisionYsides(ball, blockList2[i]):
+                    blockList2.pop(i)
+                    if ball.yDir == -1:
+                        ball.yDir = 1
+
+                    elif ball.yDir == 1:
+                        ball.yDir = -1
+
+                    break
+                if getSpriteCollisionXsides(ball, blockList2[i]):
+                    blockList2.pop(i)
+                    if ball.xDir == -1:
+                        ball.xDir = 1
+
+                    elif ball.xDir == 1:
+                        ball.xDir = -1
+
+                    break
+
+
+                ball.xDir = -ball.xDir
+                ball.yDir = -ball.yDir
+                score += 10
+                print(score)
+                print(len(blockList2))
+                break
     if ball.y > HEIGHT:
         ball.setPos(WIDTH/2-ball.width, HEIGHT - 300)
         level += 1
@@ -275,6 +267,8 @@ while running:
     elif level == 2:
         for i in range(len(blockList2)):
             screen.blit(blockList2[i].getSurface(), blockList2[i].getPOS())
+    else:
+        quit()
     clock.tick(FPS) # pause the game until the FPS time is reached
     pygame.display.flip() # update the screen with changes.
 pygame.quit()
