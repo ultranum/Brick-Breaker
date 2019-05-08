@@ -28,7 +28,47 @@ screen.fill(GREY) # Fills the entire surface with the color. Think of fill as er
 clock = pygame.time.Clock() # Starts a clock to measure time
 
 class text:
-    pass
+    def __init__(self, text = 'text', pos = (0,0)):
+        self.text = text
+        self.color = (255,255,255)
+        self.size = 28
+        self.x = pos[0]
+        self.y = pos[1]
+        self.pos = (self.x, self.y)
+        self.fontFam = 'Arial'
+        self.font = pygame.font.SysFont(self.fontFam, self.size)
+        self.surface = self.font.render(self.text, 1, self.color)
+
+    def getText(self):
+        return self.surface
+
+    def getPOS(self):
+        return self.pos
+
+    def setColor(self, color):
+        self.color = color
+        self.surface = self.font.render(self.text, 1, self.color)
+
+    def setSize(self, size):
+        self.size = size
+        self.font = pygame.font.SysFont(self.fontFam, self.size)
+        self. surface = self.font.render(self.text, 1, self.color)
+
+    def setPOS(self, x, y):
+        self.x = x
+        self.y = y
+        self.pos = (self.x, self.y)
+        self.surface = self.font.render(self.text, 1, self.color)
+
+    def setFont(self, font):
+        self.fontFam = str(font)
+        self.font = pygame.font.SysFont(self.fontFam, self.size)
+        self.surface = self.font.render(self.text, 1, self.color)
+
+    def setText(self, text):
+        self.text = str(text)
+        self.surface = self.font.render(self.text, 1, self.color)
+
 class blocks:
     def __init__(self, x=0, y=0, width=50, height=10):
         self.height = height
@@ -79,7 +119,6 @@ class blocks:
         return ('x:%s y:%s'%(self.x, self.y))
 
 class paddle(blocks):
-
     def __init__(self, x, y, width, height):
         blocks.__init__(self, x, y, width, height)
 
@@ -89,8 +128,6 @@ class paddle(blocks):
         if pressedKey[pygame.K_d]:
             self.x += spd
         self.pos = (self.x, self.y)
-
-
 
 class ball(blocks):
     def __init__(self, x, y, width, height):
@@ -131,14 +168,6 @@ def getSpriteCollisionYsides(sprite1, sprite2):
         return False
 
 def collision(rect1, rect2):
-    # topright1 = (rect1.getX() + rect1.getWidth(), rect1.getY())
-    # botright1 = (rect1.getX() + rect1.getWidth(), rect1.getY() + rect1.getHeight())
-    # topleft1 = (rect1.getX(), rect1.getY())
-    # botleft1 = (rect1.getX(), rect1.getY() + rect1.getHeight())
-    # topright2 = (rect2.getX() + rect2.getWidth(), rect2.getY())
-    # botright2 = (rect2.getX() + rect2.getWidth(), rect2.getY() + rect2.getHeight())
-    # topleft2 = (rect2.getX(), rect2.getY())
-    # botleft2 = (rect2.getX(), rect2.getY() + rect2.getHeight())
     right1 = rect1.getX() + rect1.getWidth()
     bot1 = rect1.getY() + rect1.getHeight()
     left1 = rect1.getX()
@@ -149,6 +178,7 @@ def collision(rect1, rect2):
     top2 = rect2.getY()
     if right1 > left2 and left1 < right2 and bot1 > top2 and top1 < bot2:
         return True
+
 
 def setup():
 
@@ -161,7 +191,7 @@ def setup():
         y = 30
         for i in range(4):
             x = 35
-            for j in range(18):
+            for j in range(16):
                 blockList.append(blocks(x, y, 40, 20))
                 x += blockList[i].width + 5
             y += blockList[i].height + 40
@@ -184,11 +214,15 @@ def setup():
             x -= blockList2[k].width + 10
             y += blockList2[k].height + 20
 
+def menu():
+    pass
 # --- CODE STARTS HERE --- #
 score = 0
+menu = 1
 level = 1
 paddle = paddle(WIDTH/2 - 75, HEIGHT - 100, 1500, 10)
 ball = ball(WIDTH/2 - 75,HEIGHT - 200, 10, 10)
+# title = text('Brick Breaker', (WIDTH/2, 50))
 blockList = []
 blockList2 = []
 setup()
@@ -211,46 +245,21 @@ while running:
     if level == 1:
         for i in range(len(blockList)):
             if collision(ball, blockList[i]):
-
                 blockList.pop(i)
                 ball.yDir = -ball.yDir
-                break
-
-
                 score += 10
                 print(score)
-                print(len(blockList))
                 break
 
     elif level == 2:
         for i in range(len(blockList2)):
-            if getSpriteCollision(ball, blockList2[i]):
-                if getSpriteCollisionYsides(ball, blockList2[i]):
-                    blockList2.pop(i)
-                    if ball.yDir == -1:
-                        ball.yDir = 1
-
-                    elif ball.yDir == 1:
-                        ball.yDir = -1
-
-                    break
-                if getSpriteCollisionXsides(ball, blockList2[i]):
-                    blockList2.pop(i)
-                    if ball.xDir == -1:
-                        ball.xDir = 1
-
-                    elif ball.xDir == 1:
-                        ball.xDir = -1
-
-                    break
-
-
-                ball.xDir = -ball.xDir
+            if collision(ball, blockList2[i]):
+                blockList2.pop(i)
                 ball.yDir = -ball.yDir
                 score += 10
                 print(score)
-                print(len(blockList2))
                 break
+
     if ball.y > HEIGHT:
         ball.setPos(WIDTH/2-ball.width, HEIGHT - 300)
         level += 1
@@ -261,6 +270,7 @@ while running:
     screen.fill(GREY)
     screen.blit(paddle.getSurface(), paddle.getPOS())
     screen.blit(ball.getSurface(), ball.getPOS())
+    # screen.blit(title.getText(), title.getPOS())
     if level == 1:
         for i in range(len(blockList)):
             screen.blit(blockList[i].getSurface(), blockList[i].getPOS())
