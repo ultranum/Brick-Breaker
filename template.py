@@ -9,7 +9,7 @@ pygame.init() # loads pygame module commands in the program
 
 # Display Variables
 TITLE = 'Hello World' # Appears in the window title
-FPS = 30 # fps
+FPS = 60 # fps
 WIDTH = 800
 HEIGHT = 600
 SCREENDIM = (WIDTH, HEIGHT)
@@ -194,7 +194,7 @@ def setup():
             for j in range(16):
                 blockList.append(blocks(x, y, 40, 20))
                 x += blockList[i].width + 5
-            y += blockList[i].height + 40
+            y += blockList[i].height + 20
     elif level == 2:
         paddle.setPos(WIDTH / 2 - 75, HEIGHT - 100)
         ball.setPos(WIDTH / 2 - 75, HEIGHT - 200)
@@ -214,15 +214,16 @@ def setup():
             x -= blockList2[k].width + 10
             y += blockList2[k].height + 20
 
-def menu():
-    pass
+
 # --- CODE STARTS HERE --- #
 score = 0
 menu = 1
 level = 1
 paddle = paddle(WIDTH/2 - 75, HEIGHT - 100, 1500, 10)
 ball = ball(WIDTH/2 - 75,HEIGHT - 200, 10, 10)
-# title = text('Brick Breaker', (WIDTH/2, 50))
+title = text('Brick Breaker', (WIDTH/2, 50))
+starttext = text('Press enter to start', (WIDTH/2, HEIGHT - 90))
+title.setPOS(999,999)
 blockList = []
 blockList2 = []
 setup()
@@ -234,43 +235,60 @@ while running:
         if event.type == pygame.QUIT: # If the red X was clicked.
             running = False
         pressedKeys = pygame.key.get_pressed()
-    ball.autoMove(20)
-    paddle.playerMove(pressedKeys, 15)
-    for i in range(len(blockList)):
-        collision(blockList[i],ball )
+    if menu == 1:
+        title.setPOS(WIDTH / 2 - 2*title.size, HEIGHT/2 - 30)
+        starttext.setPOS(WIDTH / 2 - starttext.size / 2, HEIGHT - 90)
+        ball.autoMove(0, 0)
+        paddle.playerMove(pressedKeys, 0)
 
-    if collision(paddle, ball): # Checks if paddle and ball collided
-        ball.yDir = -1
+        if pressedKeys[pygame.K_RETURN]:
+            menu = 0
+    else:
+        ball.autoMove(5)
+        paddle.playerMove(pressedKeys, 15)
 
-    if level == 1:
         for i in range(len(blockList)):
-            if collision(ball, blockList[i]):
-                blockList.pop(i)
-                ball.yDir = -ball.yDir
-                score += 10
-                print(score)
-                break
+            collision(blockList[i],ball )
 
-    elif level == 2:
-        for i in range(len(blockList2)):
-            if collision(ball, blockList2[i]):
-                blockList2.pop(i)
-                ball.yDir = -ball.yDir
-                score += 10
-                print(score)
-                break
+        if collision(paddle, ball): # Checks if paddle and ball collided
+            ball.yDir = -1
 
-    if ball.y > HEIGHT:
-        ball.setPos(WIDTH/2-ball.width, HEIGHT - 300)
-        level += 1
-        blockList = []
-        setup()
+        if level == 1:
+            for i in range(len(blockList)):
+                if len(blockList) == 0 or score == 640:
+                    level = 2
+                if collision(ball, blockList[i]):
+                    blockList.pop(i)
+                    ball.yDir = -ball.yDir
+                    score += 10
+                    print(score)
+                    print(len(blockList))
+                    break
+
+
+        elif level == 2:
+            for i in range(len(blockList2)):
+                if collision(ball, blockList2[i]):
+                    blockList2.pop(i)
+                    ball.yDir = -ball.yDir
+                    score += 10
+                    print(score)
+                    break
+
+        if ball.y > HEIGHT:
+            ball.setPos(WIDTH/2-ball.width, HEIGHT - 300)
+            level += 1
+            blockList = []
+            setup()
 
 
     screen.fill(GREY)
     screen.blit(paddle.getSurface(), paddle.getPOS())
     screen.blit(ball.getSurface(), ball.getPOS())
-    # screen.blit(title.getText(), title.getPOS())
+    if menu == 1:
+        screen.blit(title.getText(), title.getPOS())
+
+        screen.blit(starttext.getText(), starttext.getPOS())
     if level == 1:
         for i in range(len(blockList)):
             screen.blit(blockList[i].getSurface(), blockList[i].getPOS())
@@ -282,4 +300,3 @@ while running:
     clock.tick(FPS) # pause the game until the FPS time is reached
     pygame.display.flip() # update the screen with changes.
 pygame.quit()
-
