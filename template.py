@@ -9,7 +9,7 @@ pygame.init() # loads pygame module commands in the program
 
 # Display Variables
 TITLE = 'Hello World' # Appears in the window title
-FPS = 60 # fps
+FPS = 100 # fps
 WIDTH = 800
 HEIGHT = 600
 SCREENDIM = (WIDTH, HEIGHT)
@@ -148,25 +148,6 @@ class ball(blocks):
             self.yDir = 1
         self.pos = (self.x, self.y)
 
-
-def getSpriteCollision(sprite1, sprite2):
-    if sprite2.getX() <= sprite1.getX() + sprite1.getWidth() <= sprite2.getX() + sprite2.getWidth() + sprite1.getWidth() and sprite2.getY() <= sprite1.getY() + sprite1.getHeight() <= sprite2.getY() + sprite2.getHeight() + sprite1.getHeight():
-        return True
-    else:
-        return False
-
-def getSpriteCollisionXsides(sprite1, sprite2):
-    if sprite2.getX() <= sprite1.getX() + sprite1.getWidth() <= sprite2.getX() + sprite2.getWidth() + sprite1.getWidth():
-        return True
-    else:
-        return False
-
-def getSpriteCollisionYsides(sprite1, sprite2):
-    if sprite2.getY() + sprite2.getHeight() <= sprite1.getY() <= sprite1.getX() + sprite1.getWidth() <= sprite2.getY() + sprite2.getHeight() + sprite2.getX() + sprite2.getWidth():
-        return True
-    else:
-        return False
-
 def collision(rect1, rect2):
     right1 = rect1.getX() + rect1.getWidth()
     bot1 = rect1.getY() + rect1.getHeight()
@@ -181,7 +162,6 @@ def collision(rect1, rect2):
 
 
 def setup():
-
     if level == 1:
         paddle.setPos(WIDTH / 2 - 75, HEIGHT - 100)
         ball.setPos(WIDTH / 2 - 75, HEIGHT - 200)
@@ -219,10 +199,15 @@ def setup():
 score = 0
 menu = 1
 level = 1
+setuplevel2 = 0
+gameovercheck = 0
 paddle = paddle(WIDTH/2 - 75, HEIGHT - 100, 1500, 10)
 ball = ball(WIDTH/2 - 75,HEIGHT - 200, 10, 10)
 title = text('Brick Breaker', (WIDTH/2, 50))
-starttext = text('Press enter to start', (WIDTH/2, HEIGHT - 90))
+starttext = text('Press space', (WIDTH/2, HEIGHT - 90))
+gameover = text('GAME OVER', (WIDTH/2,50))
+retrytext = text('Press enter', (WIDTH/2, HEIGHT - 90))
+scoretext = text('SCORE: %s'%(score), (0,0))
 title.setPOS(999,999)
 blockList = []
 blockList2 = []
@@ -241,62 +226,88 @@ while running:
         ball.autoMove(0, 0)
         paddle.playerMove(pressedKeys, 0)
 
-        if pressedKeys[pygame.K_RETURN]:
+        if pressedKeys[pygame.K_SPACE]:
             menu = 0
     else:
-        ball.autoMove(5)
-        paddle.playerMove(pressedKeys, 15)
-
-        for i in range(len(blockList)):
-            collision(blockList[i],ball )
 
         if collision(paddle, ball): # Checks if paddle and ball collided
             ball.yDir = -1
 
         if level == 1:
-            for i in range(len(blockList)):
-                if len(blockList) == 0 or score == 640:
+            ball.autoMove(5)
+            paddle.playerMove(pressedKeys, 15)
+            if len(blockList) == 0 or score == 640:
+                    print('diowauiod897398w98789w3987w98799f8wefwe')
                     level = 2
+                    pass
+
+            for i in range(len(blockList)):
                 if collision(ball, blockList[i]):
                     blockList.pop(i)
                     ball.yDir = -ball.yDir
                     score += 10
                     print(score)
+                    scoretext.getText()
                     print(len(blockList))
                     break
 
 
         elif level == 2:
+            if setuplevel2 == 0:
+                setup()
+                setuplevel2 = 1
+            ball.autoMove(5)
+            paddle.playerMove(pressedKeys, 15)
+            if len(blockList2) == 0:
+                    print('diowauiod897398w98789w3987w98799f8wefwe')
+                    gameovercheck = 1
+                    pass
+
             for i in range(len(blockList2)):
                 if collision(ball, blockList2[i]):
                     blockList2.pop(i)
                     ball.yDir = -ball.yDir
                     score += 10
+                    scoretext.getText()
                     print(score)
                     break
 
         if ball.y > HEIGHT:
-            ball.setPos(WIDTH/2-ball.width, HEIGHT - 300)
-            level += 1
-            blockList = []
-            setup()
+            gameovercheck = 1
+            gameover.setPOS(WIDTH / 2 - 2 * gameover.size, HEIGHT / 2 - 30)
+            retrytext.setPOS(WIDTH / 2 - 2 * retrytext.size - 70 / 2, HEIGHT - 90)
+            ball.autoMove(0,0)
+            paddle.playerMove(pressedKeys, 0)
+            if pressedKeys[pygame.K_RETURN]:
+                score = 0
+                menu = 1
+                level = 1
+                setuplevel2 = 0
+                gameovercheck = 0
+                blockList = []
+                blockList2 = []
+                setup()
+
+
 
 
     screen.fill(GREY)
     screen.blit(paddle.getSurface(), paddle.getPOS())
     screen.blit(ball.getSurface(), ball.getPOS())
+    screen.blit(scoretext.getText(), scoretext.getPOS())
     if menu == 1:
         screen.blit(title.getText(), title.getPOS())
-
         screen.blit(starttext.getText(), starttext.getPOS())
+
     if level == 1:
         for i in range(len(blockList)):
             screen.blit(blockList[i].getSurface(), blockList[i].getPOS())
     elif level == 2:
         for i in range(len(blockList2)):
             screen.blit(blockList2[i].getSurface(), blockList2[i].getPOS())
-    else:
-        quit()
+    if gameovercheck == 1:
+        screen.blit(gameover.getText(), gameover.getPOS())
+        screen.blit(retrytext.getText(), retrytext.getPOS())
     clock.tick(FPS) # pause the game until the FPS time is reached
     pygame.display.flip() # update the screen with changes.
 pygame.quit()
