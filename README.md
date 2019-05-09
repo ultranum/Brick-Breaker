@@ -4,7 +4,9 @@ This program is a copy of the Atari game Breakout, where you bounce a ball off a
 
 ## Planning
 
-I started this program by planning out what the minimum a game like breakout needed to work, which when using abstraction minimized breakout to just blocks that do different things, such as a ball, the paddle, and the clearable blocks. I then 
+I started this program by planning out with my classmates what the minimum a game like breakout needed to work, which when using abstraction minimized breakout to just blocks that do different things, such as a ball, the paddle, and the clearable blocks. I then created a flowchart for how the program would work.
+![Picture](https://imgur.com/FxyDkzN)
 ## Features
+
 
 ## How to Run

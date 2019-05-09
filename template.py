@@ -237,7 +237,7 @@ while running:
         pressedKeys = pygame.key.get_pressed()
     if menu == 1:
         title.setPOS(WIDTH / 2 - 2*title.size, HEIGHT/2 - 30)
-        starttext.setPOS(WIDTH / 2 - starttext.size / 2, HEIGHT - 90)
+        starttext.setPOS(WIDTH / 2 - 2*starttext.size - 70 / 2, HEIGHT - 90)
         ball.autoMove(0, 0)
         paddle.playerMove(pressedKeys, 0)
 
