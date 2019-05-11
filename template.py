@@ -83,42 +83,42 @@ class blocks:
         self.xDir = 1
         self.yDir = 1
 
-    def getSurface(self):
+    def getSurface(self): # Encapsulation
         return self.surface
 
-    def getPOS(self):
+    def getPOS(self): # Encapsulation
         return self.pos
 
-    def setPos(self, x, y):
+    def setPos(self, x, y): # Encapsulation
         self.x = x
         self.y = y
         self.pos = (self.x, self.y)
         self.surface = pygame.Surface(self.dim, pygame.SRCALPHA, 32)
         self.surface.fill(self.color)
 
-    def setDim(self, width, height):
+    def setDim(self, width, height): # Encapsulation
         self.height = height
         self.width = width
         self.dim = (self.width, self.height)
         self.surface = pygame.Surface(self.dim, pygame.SRCALPHA, 32)
         self.surface.fill(self.color)
 
-    def getX(self):
+    def getX(self): # Encapsulation
         return self.x
 
-    def getY(self):
+    def getY(self): # Encapsulation
         return self.y
 
-    def getWidth(self):
+    def getWidth(self): # Encapsulation
         return self.width
 
-    def getHeight(self):
+    def getHeight(self): # Encapsulation
         return self.height
 
     def __repr__(self): # For debugging
         return ('x:%s y:%s'%(self.x, self.y))
 
-class paddle(blocks):
+class paddle(blocks): # Inheritance
     def __init__(self, x, y, width, height):
         blocks.__init__(self, x, y, width, height)
 
@@ -129,7 +129,7 @@ class paddle(blocks):
             self.x += spd
         self.pos = (self.x, self.y)
 
-class ball(blocks):
+class ball(blocks): # Inheritance
     def __init__(self, x, y, width, height):
         blocks.__init__(self, x, y, width, height)
 
@@ -172,7 +172,7 @@ def setup():
         for i in range(4):
             x = 35
             for j in range(16):
-                blockList.append(blocks(x, y, 40, 20))
+                blockList.append(blocks(x, y, 40, 20)) # Aggregation
                 x += blockList[i].width + 5
             y += blockList[i].height + 20
     elif level == 2:
@@ -183,14 +183,14 @@ def setup():
         x = 0
         y = 5
         for j in range(8):
-            blockList2.append(blocks(x, y, 40, 15))
+            blockList2.append(blocks(x, y, 40, 15)) # Aggregation
             x += blockList2[j].width + 10
             y += blockList2[j].height + 20
 
         x = WIDTH - 60
         y = 5
         for k in range(8):
-            blockList2.append(blocks(x, y, 40, 15))
+            blockList2.append(blocks(x, y, 40, 15)) # Aggregation
             x -= blockList2[k].width + 10
             y += blockList2[k].height + 20
 
@@ -209,8 +209,8 @@ gameover = text('GAME OVER', (WIDTH/2,50))
 retrytext = text('Press enter', (WIDTH/2, HEIGHT - 90))
 scoretext = text('SCORE: %s'%(score), (0,0))
 title.setPOS(999,999)
-blockList = []
-blockList2 = []
+blockList = [] # Aggregation
+blockList2 = [] # Aggregation
 setup()
 print(level)
 print(blockList)
@@ -237,7 +237,7 @@ while running:
             ball.autoMove(5)
             paddle.playerMove(pressedKeys, 15)
             if len(blockList) == 0 or score == 640:
-                    print('diowauiod897398w98789w3987w98799f8wefwe')
+                    print('this is a test')
                     level = 2
                     pass
 
@@ -248,6 +248,7 @@ while running:
                     score += 10
                     print(score)
                     scoretext.getText()
+                    scoretext = text('SCORE: %s' % (score), (0, 0))
                     print(len(blockList))
                     break
 
@@ -269,6 +270,7 @@ while running:
                     ball.yDir = -ball.yDir
                     score += 10
                     scoretext.getText()
+                    scoretext = text('SCORE: %s' % (score), (0, 0))
                     print(score)
                     break
 
