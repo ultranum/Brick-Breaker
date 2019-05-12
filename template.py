@@ -9,7 +9,7 @@ pygame.init() # loads pygame module commands in the program
 
 # Display Variables
 TITLE = 'Hello World' # Appears in the window title
-FPS = 100 # fps
+FPS = 200 # fps
 WIDTH = 800
 HEIGHT = 600
 SCREENDIM = (WIDTH, HEIGHT)
@@ -36,36 +36,37 @@ class text:
         self.y = pos[1]
         self.pos = (self.x, self.y)
         self.fontFam = 'Arial'
-        self.font = pygame.font.SysFont(self.fontFam, self.size)
+        # self.font = pygame.font.SysFont(self.fontFam, self.size)
+        self.font = pygame.font.Font(None, self.size) # This is only so the program would work on Mac
         self.surface = self.font.render(self.text, 1, self.color)
 
-    def getText(self):
+    def getText(self): # Encapsulation
         return self.surface
 
-    def getPOS(self):
+    def getPOS(self): # Encapsulation
         return self.pos
 
-    def setColor(self, color):
+    def setColor(self, color): # Encapsulation
         self.color = color
         self.surface = self.font.render(self.text, 1, self.color)
 
-    def setSize(self, size):
+    def setSize(self, size): # Encapsulation
         self.size = size
         self.font = pygame.font.SysFont(self.fontFam, self.size)
         self. surface = self.font.render(self.text, 1, self.color)
 
-    def setPOS(self, x, y):
+    def setPOS(self, x, y): # Encapsulation
         self.x = x
         self.y = y
         self.pos = (self.x, self.y)
         self.surface = self.font.render(self.text, 1, self.color)
 
-    def setFont(self, font):
+    def setFont(self, font): # Encapsulation
         self.fontFam = str(font)
         self.font = pygame.font.SysFont(self.fontFam, self.size)
         self.surface = self.font.render(self.text, 1, self.color)
 
-    def setText(self, text):
+    def setText(self, text): # Encapsulation
         self.text = str(text)
         self.surface = self.font.render(self.text, 1, self.color)
 
@@ -242,7 +243,7 @@ while running:
                     pass
 
             for i in range(len(blockList)):
-                if collision(ball, blockList[i]):
+                if collision(ball, blockList[i]): # Polymorphism
                     blockList.pop(i)
                     ball.yDir = -ball.yDir
                     score += 10
@@ -260,12 +261,20 @@ while running:
             ball.autoMove(5)
             paddle.playerMove(pressedKeys, 15)
             if len(blockList2) == 0:
-                    print('diowauiod897398w98789w3987w98799f8wefwe')
-                    gameovercheck = 1
-                    pass
+                gameovercheck = 1
+                if pressedKeys[pygame.K_RETURN]:
+                    score = 0
+                    menu = 1
+                    level = 1
+                    setuplevel2 = 0
+                    gameovercheck = 0
+                    blockList = []
+                    blockList2 = []
+                    setup()
+                pass
 
             for i in range(len(blockList2)):
-                if collision(ball, blockList2[i]):
+                if collision(ball, blockList2[i]): # Polymorphism
                     blockList2.pop(i)
                     ball.yDir = -ball.yDir
                     score += 10
@@ -288,6 +297,7 @@ while running:
                 gameovercheck = 0
                 blockList = []
                 blockList2 = []
+                scoretext = text('SCORE: %s' % (score), (0, 0))
                 setup()
 
 
